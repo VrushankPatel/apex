@@ -15,20 +15,39 @@ import (
 )
 
 // OpportunityHandler is a function that processes a detected arbitrage opportunity
+// @author VrushankPatel
+// @description Function type for handling arbitrage opportunities when detected
 type OpportunityHandler func(models.ArbitrageOpportunity)
 
 // ArbitrageDetector handles the detection of arbitrage opportunities
+// @author VrushankPatel
+// @description Core struct that handles the arbitrage detection logic and opportunity management
 type ArbitrageDetector struct {
+        // Map of exchange names to order books
         orderBooks          map[string]*models.OrderBook
+        // Mutex for thread-safe access to order books
         orderBookMutex      *sync.RWMutex
+        // Minimum profit threshold (as a decimal, e.g. 0.01 = 1%)
         minProfitThreshold  float64
+        // Map of exchange names to their taker fees
         exchangeFees        map[string]float64
+        // In-memory list of recently detected opportunities
         opportunities       []models.ArbitrageOpportunity
+        // File handle for logging opportunities to CSV
         opportunityFile     *os.File
+        // List of handlers to be called when opportunities are detected
         opportunityHandlers []OpportunityHandler
 }
 
 // NewArbitrageDetector creates a new arbitrage detector
+// @author VrushankPatel
+// @description Creates and initializes a new ArbitrageDetector with the provided configurations
+// @param orderBooks Map of exchange names to order books
+// @param mutex Mutex for thread-safe access to the order books
+// @param minProfitThreshold Minimum profit threshold as a decimal (e.g., 0.01 for 1%)
+// @param binanceFee The fee rate for Binance exchange as a decimal
+// @param krakenFee The fee rate for Kraken exchange as a decimal
+// @return A pointer to the newly created ArbitrageDetector
 func NewArbitrageDetector(
         orderBooks map[string]*models.OrderBook,
         mutex *sync.RWMutex,
@@ -67,6 +86,9 @@ func NewArbitrageDetector(
 }
 
 // Start begins the arbitrage detection loop
+// @author VrushankPatel
+// @description Starts the continuous arbitrage detection process, monitoring markets for opportunities
+// @param ctx Context used for cancellation and shutdown signals
 func (a *ArbitrageDetector) Start(ctx context.Context) {
         // Initialize the random number generator for our simulated data
         // In Go 1.20+ rand.Seed is deprecated but we keep it for compatibility
