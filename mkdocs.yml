@@ -1,0 +1,60 @@
+site_name: APEX Documentation
+site_description: Real-time cryptocurrency arbitrage detection system
+repo_url: https://github.com/VrushankPatel/apex
+repo_name: VrushankPatel/apex
+
+nav:
+  - Home: index.md
+  - Getting Started:
+    - Setup Guide: SETUP_GUIDE.md
+    - Exchange API Setup: EXCHANGE_API_SETUP.md
+    - GitHub Integration: GITHUB_SETUP.md
+  - Core Documentation:
+    - Arbitrage Guide: ARBITRAGE_GUIDE.md
+  - Legal:
+    - Disclaimer: disclaimer.md
+
+theme:
+  name: material
+  palette:
+    scheme: slate
+    primary: teal
+    accent: deep orange
+  features:
+    - navigation.tabs
+    - navigation.sections
+    - toc.integrate
+    - search.suggest
+    - search.highlight
+  icon:
+    repo: fontawesome/brands/github
+
+markdown_extensions:
+  - pymdownx.highlight:
+      anchor_linenums: true
+  - pymdownx.inlinehilite
+  - pymdownx.snippets
+  - pymdownx.superfences:
+      custom_fences:
+        - name: mermaid
+          class: mermaid
+          format: !!python/name:pymdownx.superfences.fence_code_format
+  - attr_list
+  - md_in_html
+  - admonition
+  - footnotes
+  - toc:
+      permalink: true
+
+plugins:
+  - search
+  - mermaid2
+
+extra:
+  social:
+    - icon: fontawesome/brands/github
+      link: https://github.com/VrushankPatel/apex
+      name: APEX on GitHub
+
+site_dir: buildocs
+use_directory_urls: true
