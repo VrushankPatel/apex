@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Crypto Arbitrage Detector</title>
+    <link rel="stylesheet" href="/static/css/styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+</head>
+<body>
+    <header>
+        <div class="logo">
+            <i class="fas fa-chart-line"></i>
+            <h1>Crypto Arbitrage Detector</h1>
+        </div>
+        <div class="status">
+            <span id="connection-status" class="connection-offline">
+                <i class="fas fa-circle"></i> Offline
+            </span>
+        </div>
+    </header>
+
+    <main>
+        <section class="dashboard">
+            <div class="stats-container">
+                <div class="stat-card">
+                    <h3>Active Exchanges</h3>
+                    <div class="stat-value" id="active-exchanges">0</div>
+                    <div class="stat-detail">Connected exchanges</div>
+                </div>
+                <div class="stat-card">
+                    <h3>Trading Pairs</h3>
+                    <div class="stat-value" id="trading-pairs">0</div>
+                    <div class="stat-detail">Monitored pairs</div>
+                </div>
+                <div class="stat-card">
+                    <h3>Total Opportunities</h3>
+                    <div class="stat-value" id="total-opportunities">0</div>
+                    <div class="stat-detail">Detected</div>
+                </div>
+                <div class="stat-card">
+                    <h3>Potential Profit</h3>
+                    <div class="stat-value" id="potential-profit">$0.00</div>
+                    <div class="stat-detail">Total profit potential</div>
+                </div>
+            </div>
+
+            <div class="opportunity-container">
+                <h2><i class="fas fa-bolt"></i> Live Arbitrage Opportunities</h2>
+                <table class="opportunity-table">
+                    <thead>
+                        <tr>
+                            <th>Time</th>
+                            <th>Pair</th>
+                            <th>Buy Exchange</th>
+                            <th>Sell Exchange</th>
+                            <th>Buy Price</th>
+                            <th>Sell Price</th>
+                            <th>Profit %</th>
+                            <th>Profit</th>
+                        </tr>
+                    </thead>
+                    <tbody id="opportunities-table-body">
+                        <tr class="empty-row">
+                            <td colspan="8">No opportunities detected yet</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="exchange-container">
+                <h2><i class="fas fa-exchange-alt"></i> Exchange Prices</h2>
+                <div class="exchange-grid" id="exchange-grid">
+                    <!-- Exchange cards will be generated dynamically -->
+                    <div class="empty-exchanges">No exchange data available</div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <p>Real-Time Crypto Arbitrage Detector | <span id="current-time">00:00:00</span></p>
+    </footer>
+
+    <!-- Templates -->
+    <template id="exchange-card-template">
+        <div class="exchange-card">
+            <div class="exchange-header">
+                <h3 class="exchange-name"></h3>
+                <span class="pair-name"></span>
+            </div>
+            <div class="price-container">
+                <div class="bid">
+                    <span class="label">Bid</span>
+                    <span class="value"></span>
+                </div>
+                <div class="ask">
+                    <span class="label">Ask</span>
+                    <span class="value"></span>
+                </div>
+            </div>
+            <div class="exchange-footer">
+                <span class="last-update"></span>
+            </div>
+        </div>
+    </template>
+
+    <script src="/static/js/app.js"></script>
+</body>
+</html>

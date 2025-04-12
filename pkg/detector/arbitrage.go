@@ -14,14 +14,18 @@ import (
         log "github.com/sirupsen/logrus"
 )
 
+// OpportunityHandler is a function that processes a detected arbitrage opportunity
+type OpportunityHandler func(models.ArbitrageOpportunity)
+
 // ArbitrageDetector handles the detection of arbitrage opportunities
 type ArbitrageDetector struct {
-        orderBooks         map[string]*models.OrderBook
-        orderBookMutex     *sync.RWMutex
-        minProfitThreshold float64
-        exchangeFees       map[string]float64
-        opportunities      []models.ArbitrageOpportunity
-        opportunityFile    *os.File
+        orderBooks          map[string]*models.OrderBook
+        orderBookMutex      *sync.RWMutex
+        minProfitThreshold  float64
+        exchangeFees        map[string]float64
+        opportunities       []models.ArbitrageOpportunity
+        opportunityFile     *os.File
+        opportunityHandlers []OpportunityHandler
 }
 
 // NewArbitrageDetector creates a new arbitrage detector
@@ -49,15 +53,16 @@ func NewArbitrageDetector(
         }
         
         return &ArbitrageDetector{
-                orderBooks:         orderBooks,
-                orderBookMutex:     mutex,
-                minProfitThreshold: minProfitThreshold,
+                orderBooks:          orderBooks,
+                orderBookMutex:      mutex,
+                minProfitThreshold:  minProfitThreshold,
                 exchangeFees: map[string]float64{
                         "Binance": binanceFee,
                         "Kraken":  krakenFee,
                 },
-                opportunities:   make([]models.ArbitrageOpportunity, 0),
-                opportunityFile: f,
+                opportunities:       make([]models.ArbitrageOpportunity, 0),
+                opportunityFile:     f,
+                opportunityHandlers: make([]OpportunityHandler, 0),
         }
 }
 
@@ -228,6 +233,9 @@ func (a *ArbitrageDetector) logOpportunity(opp models.ArbitrageOpportunity) {
         
         // Add to our in-memory list of opportunities
         a.opportunities = append(a.opportunities, opp)
+        
+        // Notify all registered opportunity handlers
+        a.notifyOpportunityHandlers(opp)
 }
 
 // printMarketSummary prints a summary of the current market state
@@ -235,85 +243,143 @@ func (a *ArbitrageDetector) printMarketSummary() {
         a.orderBookMutex.RLock()
         defer a.orderBookMutex.RUnlock()
         
-        // Check if we have data from both exchanges
-        binanceBook, hasBinance := a.orderBooks["Binance"]
-        krakenBook, hasKraken := a.orderBooks["Kraken"]
-        
-        if !hasBinance || !hasKraken {
-                log.Info("Market Summary: Waiting for data from all exchanges...")
+        // Check if we have any data
+        if len(a.orderBooks) == 0 {
+                log.Info("Market Summary: Waiting for data from exchanges...")
                 return
         }
         
-        // Calculate the price spread between exchanges
-        binanceAsk := binanceBook.Ask
-        krakenAsk := krakenBook.Ask
-        binanceBid := binanceBook.Bid
-        krakenBid := krakenBook.Bid
+        // Group orderbooks by pair for multi-pair support
+        pairData := make(map[string]map[string]*models.OrderBook)
         
-        bestBuyPrice := math.Min(binanceAsk, krakenAsk)
-        bestSellPrice := math.Max(binanceBid, krakenBid)
-        bestBuyExchange := "Binance"
-        bestSellExchange := "Kraken"
+        // First, organize by trading pair
+        for _, book := range a.orderBooks {
+            pairKey := book.BaseCurrency + "/" + book.QuoteCurrency
+            if _, exists := pairData[pairKey]; !exists {
+                pairData[pairKey] = make(map[string]*models.OrderBook)
+            }
+            pairData[pairKey][book.Exchange] = book
+        }
         
-        if krakenAsk < binanceAsk {
+        // For each pair, calculate and display metrics
+        for pair, exchanges := range pairData {
+            // Check if we have at least two exchanges for this pair
+            if len(exchanges) < 2 {
+                log.Infof("Market Summary for %s: Need at least two exchanges, have %d", pair, len(exchanges))
+                continue
+            }
+            
+            // For this example, we'll focus on Binance and Kraken
+            binanceBook, hasBinance := exchanges["Binance"]
+            krakenBook, hasKraken := exchanges["Kraken"]
+            
+            if !hasBinance || !hasKraken {
+                log.Infof("Market Summary for %s: Missing data from one of the primary exchanges", pair)
+                continue
+            }
+            
+            // Calculate the price spread between exchanges
+            binanceAsk := binanceBook.Ask
+            krakenAsk := krakenBook.Ask
+            binanceBid := binanceBook.Bid
+            krakenBid := krakenBook.Bid
+            
+            bestBuyPrice := math.Min(binanceAsk, krakenAsk)
+            bestSellPrice := math.Max(binanceBid, krakenBid)
+            bestBuyExchange := "Binance"
+            bestSellExchange := "Kraken"
+            
+            if krakenAsk < binanceAsk {
                 bestBuyExchange = "Kraken"
-        }
-        if binanceBid > krakenBid {
+            }
+            if binanceBid > krakenBid {
                 bestSellExchange = "Binance"
-        }
-        
-        // Calculate price difference percentage
-        priceSpreadPct := ((bestSellPrice - bestBuyPrice) / bestBuyPrice) * 100
-        
-        // Calculate total opportunities and total profit
-        totalOpportunities := len(a.opportunities)
-        totalProfit := 0.0
-        for _, opp := range a.opportunities {
+            }
+            
+            // Calculate price difference percentage
+            priceSpreadPct := ((bestSellPrice - bestBuyPrice) / bestBuyPrice) * 100
+            
+            // Calculate total opportunities and total profit
+            totalOpportunities := len(a.opportunities)
+            totalProfit := 0.0
+            for _, opp := range a.opportunities {
                 totalProfit += opp.NetProfit
-        }
-        
-        // Only retain the last 100 opportunities to avoid memory issues
-        if len(a.opportunities) > 100 {
+            }
+            
+            // Only retain the last 100 opportunities to avoid memory issues
+            if len(a.opportunities) > 100 {
                 a.opportunities = a.opportunities[len(a.opportunities)-100:]
-        }
-        
-        // Get the most recent opportunity if available
-        var recentOppStr string
-        if len(a.opportunities) > 0 {
+            }
+            
+            // Get the most recent opportunity if available
+            var recentOppStr string
+            if len(a.opportunities) > 0 {
                 // Get the most recent opportunity
                 recentOpp := a.opportunities[len(a.opportunities)-1]
                 recentOppStr = fmt.Sprintf("%s→%s: %.2f%%", 
-                        recentOpp.BuyExchange, 
-                        recentOpp.SellExchange, 
-                        recentOpp.ProfitPercentage)
-        } else {
+                    recentOpp.BuyExchange, 
+                    recentOpp.SellExchange, 
+                    recentOpp.ProfitPercentage)
+            } else {
                 recentOppStr = "None detected yet"
-        }
-        
-        // Calculate average profit percentage if we have opportunities
-        var avgProfit float64
-        if len(a.opportunities) > 0 {
+            }
+            
+            // Calculate average profit percentage if we have opportunities
+            var avgProfit float64
+            if len(a.opportunities) > 0 {
                 totalPct := 0.0
                 for _, opp := range a.opportunities {
-                        totalPct += opp.ProfitPercentage
+                    totalPct += opp.ProfitPercentage
                 }
                 avgProfit = totalPct / float64(len(a.opportunities))
+            }
+            
+            // Print summary
+            log.WithFields(log.Fields{
+                "pair":             pair,
+                "binance_bid":      fmt.Sprintf("%.2f USDT", binanceBid),
+                "binance_ask":      fmt.Sprintf("%.2f USDT", binanceAsk),
+                "kraken_bid":       fmt.Sprintf("%.2f USDT", krakenBid),
+                "kraken_ask":       fmt.Sprintf("%.2f USDT", krakenAsk),
+                "best_buy":         fmt.Sprintf("%s at %.2f USDT", bestBuyExchange, bestBuyPrice),
+                "best_sell":        fmt.Sprintf("%s at %.2f USDT", bestSellExchange, bestSellPrice),
+                "price_spread":     fmt.Sprintf("%.4f%%", priceSpreadPct),
+                "opportunities":    totalOpportunities,
+                "total_profit":     fmt.Sprintf("%.2f USDT", totalProfit),
+                "avg_profit_pct":   fmt.Sprintf("%.2f%%", avgProfit),
+                "recent_opp":       recentOppStr,
+            }).Infof("MARKET SUMMARY FOR %s", pair)
         }
         
-        // Print summary
-        log.WithFields(log.Fields{
-                "binance_btc_bid": fmt.Sprintf("%.2f USDT", binanceBid),
-                "binance_btc_ask": fmt.Sprintf("%.2f USDT", binanceAsk),
-                "kraken_btc_bid":  fmt.Sprintf("%.2f USDT", krakenBid),
-                "kraken_btc_ask":  fmt.Sprintf("%.2f USDT", krakenAsk),
-                "best_buy":        fmt.Sprintf("%s at %.2f USDT", bestBuyExchange, bestBuyPrice),
-                "best_sell":       fmt.Sprintf("%s at %.2f USDT", bestSellExchange, bestSellPrice),
-                "price_spread":    fmt.Sprintf("%.4f%%", priceSpreadPct),
+        // Also print a summary of all opportunities
+        totalOpportunities := len(a.opportunities)
+        if totalOpportunities > 0 {
+            // Only retain the last 100 opportunities to avoid memory issues
+            if totalOpportunities > 100 {
+                a.opportunities = a.opportunities[len(a.opportunities)-100:]
+            }
+            
+            // Calculate total profit
+            totalProfit := 0.0
+            totalPct := 0.0
+            for _, opp := range a.opportunities {
+                totalProfit += opp.NetProfit
+                totalPct += opp.ProfitPercentage
+            }
+            
+            avgProfit := totalPct / float64(totalOpportunities)
+            recentOpp := a.opportunities[len(a.opportunities)-1]
+            
+            log.WithFields(log.Fields{
                 "opportunities_detected": totalOpportunities,
-                "total_profit":    fmt.Sprintf("%.2f USDT", totalProfit),
-                "avg_profit_pct":  fmt.Sprintf("%.2f%%", avgProfit),
-                "recent_opp":      recentOppStr,
-        }).Info("MARKET SUMMARY")
+                "total_profit":           fmt.Sprintf("%.2f USDT", totalProfit),
+                "avg_profit_pct":         fmt.Sprintf("%.2f%%", avgProfit),
+                "recent_opportunity":     fmt.Sprintf("%s→%s: %.2f%%", 
+                                          recentOpp.BuyExchange, 
+                                          recentOpp.SellExchange, 
+                                          recentOpp.ProfitPercentage),
+            }).Info("TOTAL ARBITRAGE SUMMARY")
+        }
 }
 
 // simulateArbitrageData simulates arbitrage data for demonstration purposes
@@ -439,6 +505,9 @@ func (a *ArbitrageDetector) createGuaranteedArbitrageOpportunity(baseBTCPrice fl
                 
                 // Add to our in-memory list of opportunities
                 a.opportunities = append(a.opportunities, opportunity)
+                
+                // Notify all registered opportunity handlers
+                a.notifyOpportunityHandlers(opportunity)
         } else {
                 log.Warnf("SIMULATION DEBUG: Expected a profitable opportunity, but profit %.4f%% below threshold %.4f%%", 
                         binanceToKrakenProfit * 100, a.minProfitThreshold * 100)

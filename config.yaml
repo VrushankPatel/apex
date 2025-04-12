@@ -1,27 +1,38 @@
 # Arbitrage Detector Configuration
 
-# Minimum profit threshold as a decimal (e.g., 0.001 = 0.1%)
+# Minimum profit threshold (as a decimal, e.g., 0.001 = 0.1%)
 minProfitThreshold: 0.001
 
-# Exchange configurations
+# Trading pairs to monitor across exchanges
+tradingPairs:
+  - baseCurrency: BTC
+    quoteCurrency: USDT
+  - baseCurrency: ETH
+    quoteCurrency: USDT
+  - baseCurrency: SOL
+    quoteCurrency: USDT
+
+# Exchange-specific configurations
 exchanges:
   binance:
     enabled: true
-    pairSymbol: "BTCUSDT"
     takerFee: 0.001  # 0.1%
   
   kraken:
     enabled: true
-    pairSymbol: "XBT/USDT"
     takerFee: 0.0026  # 0.26%
+  
+  coinbase:
+    enabled: false
+    takerFee: 0.006  # 0.6%
 
 # Logging configuration
 logging:
-  level: "info"  # debug, info, warn, error
-  file: "data/arbitrage.log"
-  format: "text" # text or json
+  level: info
+  file: data/arbitrage.log
+  format: text
 
-# Opportunity logging
+# Opportunities tracking
 opportunities:
-  logFile: "data/opportunities.csv"
-  logFormat: "csv"  # csv or json
+  logFile: data/opportunities.csv
+  logFormat: csv

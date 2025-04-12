@@ -4,7 +4,6 @@ import (
         "context"
         "encoding/json"
         "fmt"
-        "strings"
         "sync"
         "time"
 
@@ -20,6 +19,7 @@ type Binance struct {
         wsURL    string
         conn     *websocket.Conn
         symbol   string
+        pairs    []models.TradingPair
 }
 
 // BinanceBookTickerResponse defines the structure of Binance's bookTicker websocket response
@@ -35,18 +35,38 @@ type BinanceBookTickerResponse struct {
 
 // NewBinance creates a new Binance exchange client
 func NewBinance(symbol string) (*Binance, error) {
+        // Parse the symbol to derive base and quote currencies
+        // Assuming standard format like BTCUSDT, extract BTC and USDT
+        var baseCurrency, quoteCurrency string
+        
+        if len(symbol) >= 7 {
+            // Most common quote currencies are USDT (4), BUSD (4), USDC (4), USD (3)
+            baseCurrency = symbol[:len(symbol)-4]
+            quoteCurrency = symbol[len(symbol)-4:]
+        } else if len(symbol) >= 6 {
+            // Fallback for pairs like BTCUSD
+            baseCurrency = symbol[:len(symbol)-3]
+            quoteCurrency = symbol[len(symbol)-3:]
+        } else {
+            // Default fallback
+            baseCurrency = "BTC"
+            quoteCurrency = "USDT"
+        }
+        
         return &Binance{
                 BaseExchange: BaseExchange{
                         name:   "Binance",
                         symbol: symbol,
                         orderBook: &models.OrderBook{
-                                Exchange: "Binance",
-                                Symbol:   symbol,
+                                Exchange:      "Binance",
+                                Symbol:        symbol,
+                                BaseCurrency:  baseCurrency,
+                                QuoteCurrency: quoteCurrency,
                         },
+                        takerFee: 0.001, // 0.1% is the default fee
                 },
-                // Updated to use the newer API endpoint structure
                 wsURL:  "wss://stream.binance.com:9443/ws",
-                symbol: strings.ToLower(symbol), // Binance requires lowercase symbols
+                symbol: symbol,
         }, nil
 }
 
