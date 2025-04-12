@@ -5,7 +5,7 @@ import (
         "sync"
         "time"
 
-        "arbitrage-detector/pkg/models"
+        "apex-arbitrage/pkg/models"
 )
 
 // Exchange defines the interface that all exchange implementations must satisfy

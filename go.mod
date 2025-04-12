@@ -1,4 +1,4 @@
-module arbitrage-detector
+module apex-arbitrage
 
 go 1.19
 

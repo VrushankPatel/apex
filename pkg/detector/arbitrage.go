@@ -9,7 +9,7 @@ import (
         "sync"
         "time"
 
-        "arbitrage-detector/pkg/models"
+        "apex-arbitrage/pkg/models"
 
         log "github.com/sirupsen/logrus"
 )

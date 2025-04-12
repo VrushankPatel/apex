@@ -9,12 +9,12 @@ import (
         "syscall"
         "time"
 
-        "arbitrage-detector/pkg/config"
-        "arbitrage-detector/pkg/detector"
-        "arbitrage-detector/pkg/exchanges"
-        "arbitrage-detector/pkg/models"
-        "arbitrage-detector/pkg/server"
-        "arbitrage-detector/pkg/util"
+        "apex-arbitrage/pkg/config"
+        "apex-arbitrage/pkg/detector"
+        "apex-arbitrage/pkg/exchanges"
+        "apex-arbitrage/pkg/models"
+        "apex-arbitrage/pkg/server"
+        "apex-arbitrage/pkg/util"
 
         log "github.com/sirupsen/logrus"
 )
@@ -98,8 +98,8 @@ func main() {
         }()
 
         // Print header for the dashboard
-        log.Info("Real-Time Arbitrage Detector Started")
-        log.Info("--------------------------------------")
+        log.Info("APEX: Arbitrage Profit EXplorer Started")
+        log.Info("-----------------------------------------")
         
         // Display the trading pairs we're monitoring
         pairs := []string{}

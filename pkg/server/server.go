@@ -6,7 +6,7 @@ import (
         "sync"
         "time"
 
-        "arbitrage-detector/pkg/models"
+        "apex-arbitrage/pkg/models"
 
         "github.com/gorilla/websocket"
         log "github.com/sirupsen/logrus"
