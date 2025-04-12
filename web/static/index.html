@@ -21,6 +21,53 @@
         </header>
 
         <div class="dashboard">
+            <div class="dashboard-card settings">
+                <h2>Market Settings</h2>
+                <div class="settings-container">
+                    <div class="settings-row">
+                        <div class="settings-group">
+                            <label for="market-select">Select Market:</label>
+                            <select id="market-select" class="market-select">
+                                <option value="crypto" selected>Cryptocurrency</option>
+                                <option value="stock-us">US Stock Market (NASDAQ/NYSE)</option>
+                                <option value="stock-in">Indian Stock Market (NSE/BSE)</option>
+                                <option value="forex">Forex</option>
+                                <option value="commodities">Commodities</option>
+                            </select>
+                        </div>
+                        <div class="settings-group">
+                            <label for="refresh-rate">Refresh Rate:</label>
+                            <select id="refresh-rate" class="refresh-select">
+                                <option value="1000">1 second</option>
+                                <option value="2000" selected>2 seconds</option>
+                                <option value="5000">5 seconds</option>
+                                <option value="10000">10 seconds</option>
+                            </select>
+                        </div>
+                        <div class="settings-group">
+                            <label for="simulation-mode">Simulation Mode:</label>
+                            <span id="simulation-mode" class="simulation-badge">ACTIVE</span>
+                            <span class="tooltip">Using simulated data for demonstration</span>
+                        </div>
+                    </div>
+                    <div class="settings-row exchanges-row">
+                        <div class="settings-group">
+                            <label>Active Exchanges:</label>
+                            <div class="exchange-badges" id="active-exchanges">
+                                <span class="exchange-badge active" data-exchange="binance">Binance</span>
+                                <span class="exchange-badge active" data-exchange="kraken">Kraken</span>
+                                <span class="exchange-badge" data-exchange="coinbase">Coinbase</span>
+                                <span class="exchange-badge" data-exchange="kucoin">KuCoin</span>
+                                <span class="exchange-badge" data-exchange="nasdaq">NASDAQ</span>
+                                <span class="exchange-badge" data-exchange="nyse">NYSE</span>
+                                <span class="exchange-badge" data-exchange="nse">NSE</span>
+                                <span class="exchange-badge" data-exchange="bse">BSE</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
             <div class="dashboard-card summary">
                 <h2>Market Summary</h2>
                 <div class="stats-container">
@@ -70,27 +117,57 @@
 
             <div class="dashboard-row">
                 <div class="dashboard-card opportunities">
-                    <h2>Arbitrage Opportunities</h2>
+                    <div class="card-header-actions">
+                        <h2>Arbitrage Opportunities</h2>
+                        <div class="card-actions">
+                            <div class="filter-group">
+                                <label for="pair-filter">Filter by pair:</label>
+                                <select id="pair-filter" class="filter-select">
+                                    <option value="all">All Pairs</option>
+                                    <option value="btc-usdt">BTC/USDT</option>
+                                    <option value="eth-usdt">ETH/USDT</option>
+                                    <option value="sol-usdt">SOL/USDT</option>
+                                    <option value="aapl">AAPL (Apple)</option>
+                                    <option value="msft">MSFT (Microsoft)</option>
+                                    <option value="googl">GOOGL (Google)</option>
+                                    <option value="amzn">AMZN (Amazon)</option>
+                                </select>
+                            </div>
+                            <div class="filter-group">
+                                <label for="min-profit">Min Profit:</label>
+                                <input type="number" id="min-profit" class="profit-input" min="0.1" step="0.1" value="0.1">
+                                <span>%</span>
+                            </div>
+                            <button id="view-all-btn" class="view-all-btn">View All</button>
+                        </div>
+                    </div>
                     <div class="opportunity-container">
                         <table class="opportunity-table">
                             <thead>
                                 <tr>
                                     <th>Time</th>
+                                    <th>Asset</th>
                                     <th>Buy Exchange</th>
                                     <th>Sell Exchange</th>
                                     <th>Buy Price</th>
                                     <th>Sell Price</th>
                                     <th>Profit %</th>
                                     <th>Net Profit</th>
+                                    <th>Action</th>
                                 </tr>
                             </thead>
                             <tbody id="opportunities-table-body">
                                 <!-- Opportunities will be populated here -->
                                 <tr>
-                                    <td colspan="7" class="table-empty-message">Waiting for arbitrage opportunities...</td>
+                                    <td colspan="9" class="table-empty-message">Waiting for arbitrage opportunities...</td>
                                 </tr>
                             </tbody>
                         </table>
+                    </div>
+                    <div class="pagination">
+                        <button id="prev-page" class="pagination-button" disabled>&laquo; Previous</button>
+                        <span id="page-info">Page 1 of 1</span>
+                        <button id="next-page" class="pagination-button" disabled>Next &raquo;</button>
                     </div>
                 </div>
             </div>
