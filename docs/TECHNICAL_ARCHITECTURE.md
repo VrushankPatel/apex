@@ -8,9 +8,9 @@ APEX is designed as a high-performance, real-time arbitrage detection system for
 
 ```mermaid
 graph TD
-    A[Exchange WebSocket Feeds] -->|Real-time Data| B[Data Ingestion Layer]
-    B -->|Normalized Data| C[Order Book Manager]
-    C -->|Price Updates| D[Arbitrage Detector]
+    A[Exchange WebSocket Feeds] -->|Real-time Data| B[APEX Core Engine]
+    B -->|Process| C[Arbitrage Detection]
+    C -->|Price Updates| D[APEX]
     D -->|Opportunities| E[Opportunity Manager]
     E -->|Filtered Results| F[WebSocket Server]
     F -->|Real-time Updates| G[Web Interface]
@@ -41,7 +41,7 @@ type OrderBook struct {
 - Efficient memory management
 - Quick access to best bid/ask prices
 
-### 3. Arbitrage Detector (`pkg/detector`)
+### 3. APEX Core (`pkg/detector`)
 - Implements core arbitrage detection algorithm
 - Calculates profit opportunities considering:
   - Exchange fees

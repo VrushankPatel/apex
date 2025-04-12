@@ -1,6 +1,6 @@
-# Real-Time Arbitrage Detector: Setup Guide
+# APEX Setup Guide
 
-This guide will walk you through setting up and running the Real-Time Arbitrage Detector from scratch.
+This guide will walk you through setting up and running APEX from scratch.
 
 ## System Requirements
 
@@ -14,8 +14,8 @@ This guide will walk you through setting up and running the Real-Time Arbitrage 
 ### 1. Clone the Repository
 
 ```bash
-git clone https://github.com/yourusername/arbitrage-detector.git
-cd arbitrage-detector
+git clone https://github.com/yourusername/apex.git
+cd apex
 ```
 
 ### 2. Install Dependencies
@@ -44,7 +44,7 @@ Edit the `.env` file with your preferred text editor and configure:
 
 ```bash
 # Optional: Build a binary
-go build -o arbitrage-detector
+go build -o apex
 ```
 
 Or you can run directly from source code in the next step.
@@ -53,7 +53,7 @@ Or you can run directly from source code in the next step.
 
 ```bash
 # Using the binary
-./arbitrage-detector
+./apex
 
 # Or directly from source
 go run main.go
@@ -67,7 +67,7 @@ Open your web browser and navigate to:
 http://localhost:8080
 ```
 
-You should see the Arbitrage Detector dashboard.
+You should see the APEX dashboard.
 
 ## Configuration Options
 
@@ -140,7 +140,7 @@ See the exchange implementation files in `pkg/exchange` for details.
 Application logs are printed to the console and can be redirected to a file:
 
 ```bash
-./arbitrage-detector > arbitrage.log 2>&1
+./apex > apex.log 2>&1
 ```
 
 ### Performance Considerations
@@ -177,7 +177,7 @@ Application logs are printed to the console and can be redirected to a file:
 If you encounter issues not covered in this guide:
 
 1. Check the application logs for error messages
-2. Review the [GitHub repository](https://github.com/yourusername/arbitrage-detector) for existing issues or to report a new one
+2. Review the [GitHub repository](https://github.com/yourusername/apex) for existing issues or to report a new one
 3. Consult the [API documentation](./API.md) for reference
 
 ## Upgrading
@@ -199,20 +199,20 @@ Always check the release notes for breaking changes before upgrading.
 Create a systemd service file:
 
 ```bash
-sudo nano /etc/systemd/system/arbitrage-detector.service
+sudo nano /etc/systemd/system/apex.service
 ```
 
 Add the following content:
 
 ```
 [Unit]
-Description=Real-Time Arbitrage Detector
+Description=APEX
 After=network.target
 
 [Service]
 User=yourusername
-WorkingDirectory=/path/to/arbitrage-detector
-ExecStart=/path/to/arbitrage-detector/arbitrage-detector
+WorkingDirectory=/path/to/apex
+ExecStart=/path/to/apex/apex
 Restart=on-failure
 RestartSec=5
 
@@ -223,8 +223,8 @@ WantedBy=multi-user.target
 Enable and start the service:
 
 ```bash
-sudo systemctl enable arbitrage-detector
-sudo systemctl start arbitrage-detector
+sudo systemctl enable apex
+sudo systemctl start apex
 ```
 
 ### Docker Support
@@ -232,8 +232,8 @@ sudo systemctl start arbitrage-detector
 For containerized deployment, you can build a Docker image using the provided Dockerfile:
 
 ```bash
-docker build -t arbitrage-detector .
-docker run -p 8080:8080 --env-file .env arbitrage-detector
+docker build -t apex .
+docker run -p 8080:8080 --env-file .env apex
 ```
 
 ## Next Steps
@@ -246,4 +246,4 @@ Once you have the system running, consider:
 
 ---
 
-With this setup guide, you should be able to get the Real-Time Arbitrage Detector up and running quickly. The system is designed to be both a learning tool for understanding arbitrage concepts and a practical tool for identifying real market opportunities.
+With this setup guide, you should be able to get APEX up and running quickly. The system is designed to be both a learning tool for understanding arbitrage concepts and a practical tool for identifying real market opportunities.

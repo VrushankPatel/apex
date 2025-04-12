@@ -1,10 +1,10 @@
-# Setting Up Exchange API Connections
+# Exchange API Setup Guide
 
-This guide explains how to configure your Arbitrage Detector to use real-time data from cryptocurrency exchanges instead of simulated data.
+This guide explains how to configure your APEX to use real-time data from cryptocurrency exchanges instead of simulated data.
 
 ## Overview
 
-The Arbitrage Detector can connect to multiple cryptocurrency exchanges via their APIs to access real-time market data. While the system includes a simulation mode for testing, connecting to actual exchanges provides the most accurate arbitrage detection.
+APEX can connect to multiple cryptocurrency exchanges via their APIs to access real-time market data. While the system includes a simulation mode for testing, connecting to actual exchanges provides the most accurate arbitrage detection.
 
 ## Exchange API Keys
 
@@ -30,9 +30,10 @@ The system currently supports:
    - Log into your Binance account
    - Navigate to "API Management" (usually under your profile or account settings)
    - Click "Create API"
-   - Set a label for your API key (e.g., "Arbitrage Detector")
+   - Set a label for your API key (e.g., "APEX")
    - For security, restrict API access to only read-only permissions
    - Copy and securely store your API Key and Secret Key
+   - Set IP restrictions if desired
 
 ### Kraken API Keys
 
@@ -42,7 +43,7 @@ The system currently supports:
    - Log into your Kraken account
    - Navigate to "Security" > "API"
    - Click "Add New Key"
-   - Set a key description (e.g., "Arbitrage Detector")
+   - Set a key description (e.g., "APEX")
    - Under permissions, select only "Query Funds" and "Query Open Orders & Trades"
    - Click "Generate Key"
    - Copy and securely store your API Key and Private Key
@@ -61,7 +62,7 @@ The system currently supports:
    - Click "Create API Key"
    - Copy and securely store your API Key, Secret, and Passphrase
 
-## Configuring the Arbitrage Detector
+## Configuring APEX
 
 1. **Create a .env file**:
    ```bash
@@ -140,4 +141,4 @@ Refer to the existing exchange implementations as examples.
 
 ---
 
-With proper API configuration, your Arbitrage Detector will transition from simulation mode to monitoring real market conditions, potentially identifying actual arbitrage opportunities in the cryptocurrency market.
+With proper API configuration, APEX will transition from simulation mode to monitoring real market conditions, potentially identifying actual arbitrage opportunities in the cryptocurrency market.

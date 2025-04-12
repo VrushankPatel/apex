@@ -1,4 +1,4 @@
-# Arbitrage Detector Configuration
+# APEX Configuration
 
 # Minimum profit threshold (as a decimal, e.g., 0.001 = 0.1%)
 minProfitThreshold: 0.001

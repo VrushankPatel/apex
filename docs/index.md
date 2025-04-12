@@ -44,29 +44,47 @@ Arbitrage is the practice of taking advantage of price differences for the same 
 ## Documentation Structure
 
 ### 📚 Getting Started
-1. [Complete Setup Guide](SETUP_GUIDE.md)
-   - System requirements and prerequisites
-   - Installation steps
-   - Configuration and environment setup
-   - Running the application
+<ul>
+<li>
+    <a href="SETUP_GUIDE">Complete Setup Guide</a>
+    <ul>
+        <li>System requirements and prerequisites</li>
+        <li>Installation steps</li>
+        <li>Configuration and environment setup</li>
+        <li>Running the application</li>
+    </ul>
+</li>
 
-2. [Exchange API Setup](EXCHANGE_API_SETUP.md)
-   - Detailed guide for each supported exchange
-   - API key creation and permissions
-   - Security best practices
-   - Rate limits and considerations
+<li>
+    <a href="EXCHANGE_API_SETUP">Exchange API Setup</a>
+    <ul>
+        <li>Detailed guide for each supported exchange</li>
+        <li>API key creation and permissions</li>
+        <li>Security best practices</li>
+        <li>Rate limits and considerations</li>
+    </ul>
+</li>
 
-3. [GitHub Integration](GITHUB_SETUP.md)
-   - Repository setup and configuration
-   - CI/CD pipeline setup
-   - Deployment guidelines
-   - Contributing guidelines
+<li>
+    <a href="GITHUB_SETUP">GitHub Integration</a>
+    <ul>
+        <li>Repository setup and configuration</li>
+        <li>CI/CD pipeline setup</li>
+        <li>Deployment guidelines</li>
+        <li>Contributing guidelines</li>
+    </ul>
+</li>
 
-4. [Arbitrage Guide](ARBITRAGE_GUIDE.md)
-   - Understanding cryptocurrency arbitrage
-   - Market mechanics and opportunities
-   - Risk management strategies
-   - Trading considerations
+<li>
+    <a href="ARBITRAGE_GUIDE">Arbitrage Guide</a>
+    <ul>
+        <li>Understanding cryptocurrency arbitrage</li>
+        <li>Market mechanics and opportunities</li>
+        <li>Risk management strategies</li>
+        <li>Trading considerations</li>
+    </ul>
+</li>
+</ul>
 
 ## Core Features
 
@@ -136,14 +154,14 @@ This software is for educational purposes only. Cryptocurrency trading involves 
 - 🌟 [Star us on GitHub](https://github.com/VrushankPatel/apex)
 - 🐛 [Report Issues](https://github.com/VrushankPatel/apex/issues)
 - 💡 [Feature Requests](https://github.com/VrushankPatel/apex/issues)
-- 📚 [Contributing Guidelines](GITHUB_SETUP.md#contributing)
+- 📚 [Contributing Guidelines](GITHUB_SETUP#contributing)
 
 ## License
 
-APEX is released under the MIT License. See the [LICENSE](../LICENSE) file for details.
+APEX is released under the MIT License. See the [LICENSE](https://github.com/VrushankPatel/apex?tab=MIT-1-ov-file) file for details.
 
 ---
 
 <div align="center">
-  <strong>Ready to get started? Follow our <a href="SETUP_GUIDE.md">Setup Guide</a>!</strong>
+  <strong>Ready to get started? Follow our <a href="SETUP_GUIDE">Setup Guide</a>!</strong>
 </div> 

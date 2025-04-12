@@ -1,132 +1,155 @@
-# Pushing Arbitrage Detector to GitHub
+# Contributing to APEX
 
-This guide will walk you through the steps to push your Arbitrage Detector project to GitHub.
+This guide explains how to contribute to APEX through GitHub.
 
-## Prerequisites
+## Getting Started
 
-1. **GitHub Account**: Ensure you have a GitHub account. If not, create one at [github.com](https://github.com/).
-2. **Git Installation**: Make sure Git is installed on your computer.
-3. **Git Configuration**: Set up your Git username and email.
+### 1. Fork the Repository
 
-## Steps to Push to GitHub
+1. Visit the [APEX repository](https://github.com/VrushankPatel/apex) on GitHub
+2. Click the "Fork" button in the top-right corner
+3. Select your GitHub account as the destination for the fork
 
-### 1. Create a New Repository on GitHub
-
-1. Log in to your GitHub account.
-2. Click on the "+" icon in the upper-right corner and select "New repository".
-3. Name your repository (e.g., "arbitrage-detector").
-4. Add an optional description.
-5. Choose repository visibility (public or private).
-6. Do NOT initialize the repository with a README, .gitignore, or license.
-7. Click "Create repository".
-
-### 2. Initialize Git in Your Project
-
-Open a terminal or command prompt in your arbitrage-detector directory:
+### 2. Clone Your Fork
 
 ```bash
-cd arbitrage-detector
-git init
+git clone https://github.com/YOUR_USERNAME/apex.git
+cd apex
 ```
 
-### 3. Add Your Files to Git
+### 3. Set Up Remote Repositories
 
 ```bash
-# Stage all files
-git add .
+# Add the original repository as "upstream"
+git remote add upstream https://github.com/VrushankPatel/apex.git
+
+# Verify your remotes
+git remote -v
 ```
 
-### 4. Create an Initial Commit
+## Making Contributions
+
+### 1. Create a Feature Branch
+
+Always create a new branch for your changes:
 
 ```bash
-git commit -m "Initial commit: Real-Time Arbitrage Detector"
+# Ensure you're up to date
+git fetch upstream
+git checkout main
+git merge upstream/main
+
+# Create a new branch
+git checkout -b feature/your-feature-name
 ```
 
-### 5. Connect to GitHub Repository
+### 2. Development Guidelines
 
-Replace `YOUR_USERNAME` with your GitHub username:
+1. **Code Style**
+   - Follow Go best practices and conventions
+   - Use meaningful variable and function names
+   - Add comments for complex logic
+   - Write tests for new features
+
+2. **Commit Messages**
+   - Write clear, descriptive commit messages
+   - Start with a verb (e.g., "Add", "Fix", "Update")
+   - Reference issue numbers if applicable
+
+### 3. Testing Your Changes
 
 ```bash
-git remote add origin https://github.com/YOUR_USERNAME/arbitrage-detector.git
+# Run tests
+go test ./...
+
+# Run linter
+golangci-lint run
 ```
 
-### 6. Push to GitHub
+### 4. Submitting Changes
 
-```bash
-git push -u origin main
-```
-
-Note: If your default branch is named "master" instead of "main", use:
-
-```bash
-git push -u origin master
-```
-
-## Important Security Considerations
-
-### Protecting Sensitive Information
-
-1. **API Keys**: The `.env` file containing your exchange API keys should never be pushed to GitHub.
-   - The `.gitignore` file already includes `.env` to prevent accidental commits.
-   - Always use `.env.example` as a template without actual credentials.
-
-2. **Secrets Management**: Consider using GitHub Secrets for CI/CD workflows if you plan to deploy the application.
-
-### License Considerations
-
-1. If you plan to make your repository public, consider adding a license file.
-2. For open-source projects, common licenses include MIT, Apache 2.0, or GPL.
-
-## Collaborating with Others
-
-### Managing Branches
-
-1. For new features or bug fixes, create feature branches:
+1. **Push to Your Fork**
    ```bash
-   git checkout -b feature/new-exchange-support
+   git push origin feature/your-feature-name
    ```
 
-2. After making changes, push the branch:
-   ```bash
-   git push origin feature/new-exchange-support
-   ```
+2. **Create a Pull Request**
+   - Go to the [APEX repository](https://github.com/VrushankPatel/apex)
+   - Click "Pull Requests" > "New Pull Request"
+   - Select "compare across forks"
+   - Choose your fork and branch
+   - Fill out the PR template
+   - Submit the pull request
 
-3. Create a Pull Request on GitHub to merge changes.
+### 5. PR Best Practices
 
-### Issue Tracking
+- Keep changes focused and atomic
+- Include tests for new features
+- Update documentation if needed
+- Respond to review comments promptly
+- Rebase on main if requested
 
-Use GitHub Issues to track bugs, enhancements, and feature requests:
+## Keeping Your Fork Updated
 
-1. Click the "Issues" tab on your repository.
-2. Click "New issue".
-3. Add a title and description, then submit.
-
-## Continuous Integration
-
-Consider setting up GitHub Actions for automated testing and building:
-
-1. Create a `.github/workflows` directory in your repository.
-2. Add YAML files defining your CI workflows (e.g., testing, linting).
-
-## Keeping Your Repository Updated
-
-Regularly update your local repository:
+Regularly sync your fork with the main repository:
 
 ```bash
-git pull origin main
+git fetch upstream
+git checkout main
+git merge upstream/main
+git push origin main
 ```
 
-## FAQ
+## Issue Guidelines
 
-**Q: What if I get a "Permission denied" error when pushing?**
-A: Ensure you're using the correct GitHub credentials. You may need to set up SSH keys or use a personal access token.
+### Creating Issues
 
-**Q: How do I undo commits before pushing?**
-A: Use `git reset HEAD~1` to undo the last commit while keeping your changes.
+1. **Search First**
+   - Check if the issue already exists
+   - Look through closed issues
 
-**Q: How do I update my repository description or settings?**
-A: Go to your repository on GitHub, click "Settings" to modify various aspects.
+2. **Issue Types**
+   - Bug reports
+   - Feature requests
+   - Documentation improvements
+   - Performance issues
+
+3. **Issue Template**
+   - Use the provided issue templates
+   - Include all requested information
+   - Add steps to reproduce for bugs
+
+## Code Review Process
+
+1. **Initial Review**
+   - Maintainers will review your PR
+   - Automated tests must pass
+   - Code style must meet guidelines
+
+2. **Feedback**
+   - Address all review comments
+   - Ask questions if unclear
+   - Make requested changes
+
+3. **Approval and Merge**
+   - PR needs maintainer approval
+   - Changes may be requested
+   - Maintainers will merge approved PRs
+
+## Community Guidelines
+
+- Be respectful and constructive
+- Help others when possible
+- Follow the code of conduct
+- Participate in discussions
+
+## Getting Help
+
+- Join our community channels
+- Ask questions in issues
+- Read the documentation
+- Contact maintainers if needed
 
 ---
 
-With these steps, your Arbitrage Detector project will be securely hosted on GitHub, allowing for version control, collaboration, and potential community contributions.
+Thank you for contributing to APEX! Your efforts help make the project better for everyone.

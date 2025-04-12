@@ -289,7 +289,7 @@ Best practices include:
 
 ---
 
-## Real-Time Arbitrage Detector Implementation
+## Real-Time Arbitrage tracing
 
 Our arbitrage detection system implements the principles discussed above through the following components:
 
@@ -337,4 +337,4 @@ The system is highly configurable through the `.env` file, allowing users to:
 
 ---
 
-This guide provides a comprehensive overview of cryptocurrency arbitrage trading principles and how our Real-Time Arbitrage Detector implements these concepts. While the detector automates the opportunity identification process, successful arbitrage trading still requires careful risk management, continuous system monitoring, and adaptation to changing market conditions.
+This guide provides a comprehensive overview of cryptocurrency arbitrage trading principles and how APEX implements these concepts. While the detector automates the opportunity identification process, successful arbitrage trading still requires careful risk management, continuous system monitoring, and adaptation to changing market conditions.

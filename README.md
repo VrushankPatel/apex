@@ -3,15 +3,15 @@
 A sophisticated Go-based system for detecting arbitrage opportunities across cryptocurrency exchanges in real-time.
 
 [![Go](https://github.com/VrushankPatel/apex/actions/workflows/go.yml/badge.svg)](https://github.com/VrushankPatel/apex/actions/workflows/go.yml)
-[![Go](https://github.com/VrushankPatel/apex/actions/workflows/go.yml/badge.svg)](https://github.com/VrushankPatel/apex/actions/workflows/go.yml)
 [![Go Version](https://img.shields.io/badge/Go-1.23.8-blue?logo=go)](https://golang.org/doc/go1.23)
 [![Author](https://img.shields.io/badge/Author-VrushankPatel-blue)](https://github.com/VrushankPatel)
 [![Maintainer](https://img.shields.io/badge/Maintainer-VrushankPatel-green)](https://github.com/VrushankPatel)
 [![License](https://img.shields.io/badge/License-MIT-yellow)](LICENSE)
 [![UPX](https://img.shields.io/badge/UPX-4.2.4-orange)](https://upx.github.io/)
-[![Market Data](https://img.shields.io/badge/Market%20Data-Real--Time-brightgreen)](https://github.com/VrushankPatel/apex)
-[![Exchanges](https://img.shields.io/badge/Exchanges-Binance%20%7C%20Kraken%20%7C%20Coinbase-informational)](https://github.com/VrushankPatel/apex)
-[![Trading Type](https://img.shields.io/badge/Trading-Crypto%20Arbitrage-blueviolet)](https://github.com/VrushankPatel/apex)
+[![Market Data](https://img.shields.io/badge/Market%20Data-Real--Time-brightgreen)](https://apex-docs.readthedocs.io/en/latest/ARBITRAGE_GUIDE/#market-data-analysis)
+[![Exchanges](https://img.shields.io/badge/Exchanges-Binance%20%7C%20Kraken%20%7C%20Coinbase-informational)](https://apex-docs.readthedocs.io/en/latest/ARBITRAGE_GUIDE/#exchange-fragmentation)
+[![Trading Type](https://img.shields.io/badge/Trading-Crypto%20Arbitrage-blueviolet)](https://apex-docs.readthedocs.io/en/latest/ARBITRAGE_GUIDE/)
+[![Docs](https://img.shields.io/badge/Docs-ReadTheDocs-teal)](https://apex-docs.readthedocs.io/)
 
 ## What is Arbitrage?
 
