@@ -1,118 +1,151 @@
-# Real-Time Crypto Arbitrage Detector
+# Real-Time Cryptocurrency Arbitrage Detector
 
-![Arbitrage Detector](assets/arbitrage-banner.png)
+A sophisticated Go-based system for detecting arbitrage opportunities across cryptocurrency exchanges in real-time.
 
-[![Go Report Card](https://goreportcard.com/badge/github.com/yourusername/arbitrage-detector)](https://goreportcard.com/report/github.com/yourusername/arbitrage-detector)
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+![Arbitrage Detector UI](web/static/img/screenshot.png)
 
-A high-performance, real-time cryptocurrency arbitrage detector built in Go. Monitor multiple exchanges simultaneously to identify profitable trading opportunities where price differences between exchanges create potential for profit.
+## What is Arbitrage?
 
-## 🚀 Features
+Arbitrage is the practice of taking advantage of price differences for the same asset in different markets. In the context of cryptocurrency trading, this means buying a cryptocurrency on one exchange where the price is lower and simultaneously selling it on another exchange where the price is higher, making a profit from the price difference.
 
-- **Multi-Exchange Support**: Currently supports Binance, Kraken, and Coinbase with easy extensibility
-- **Real-Time Monitoring**: WebSocket connections for live market data
-- **Multi-Pair Trading**: Monitor BTC, ETH, SOL, and more against USDT/USD
-- **Fee-Aware Calculations**: Accounts for exchange trading fees when calculating potential profits
-- **Opportunity Logging**: Records all detected arbitrage opportunities for analysis
-- **High Performance**: Written in Go for speed and efficiency
-- **Web UI**: Simple dashboard to visualize opportunities (optional)
-- **Simulation Mode**: Test the system without real exchange connections
+## Features
 
-## 📊 How It Works
+- **Multi-Exchange Support**: Monitor prices on Binance, Kraken, and Coinbase (expandable to other exchanges)
+- **Real-Time Detection**: Identify arbitrage opportunities as they appear
+- **Configurable Thresholds**: Set minimum profit thresholds to filter opportunities
+- **Web Interface**: Interactive UI for monitoring market data and opportunities
+- **WebSocket Updates**: Real-time data pushed to the browser
+- **Historical Analysis**: Track past opportunities and overall performance
+- **Simulation Mode**: Test the system without real trades using simulated data
 
-1. **Connect to Exchanges**: Establishes WebSocket connections to supported cryptocurrency exchanges
-2. **Market Data Analysis**: Continuously monitors the bid-ask spreads across exchanges
-3. **Arbitrage Detection**: Identifies situations where buying on one exchange and selling on another would yield profit
-4. **Fee Calculation**: Accounts for trading fees to ensure opportunities are genuinely profitable
-5. **Opportunity Logging**: Records profitable arbitrage opportunities with timestamps and profit metrics
+## How It Works
 
-## 📋 Requirements
+1. **Data Collection**: The system connects to multiple cryptocurrency exchanges via their WebSocket APIs to receive real-time market data
+2. **Arbitrage Detection**: Continuously compares prices across exchanges to identify opportunities where buying on one exchange and selling on another would result in profit
+3. **Profit Calculation**: Accounts for exchange fees, network/gas fees, and slippage to calculate real potential profit
+4. **Notification**: Alerts the user to opportunities meeting the configured profit threshold
+5. **Analysis**: Tracks statistics on opportunities over time
 
-- Go 1.19 or higher
-- Internet connection for live exchange data
-- API credentials for exchanges (optional, simulation mode works without them)
+## Arbitrage Calculation
 
-## 🔧 Installation
-
-```bash
-# Clone the repository
-git clone https://github.com/yourusername/arbitrage-detector.git
-cd arbitrage-detector
-
-# Install dependencies
-go mod tidy
-
-# Run the application
-go run main.go
-```
-
-## ⚙️ Configuration
-
-Configuration is handled via the `config.yaml` file:
-
-```yaml
-# Minimum profit threshold (as a decimal, e.g., 0.001 = 0.1%)
-minProfitThreshold: 0.001
-
-# Trading pairs to monitor across exchanges
-tradingPairs:
-  - baseCurrency: BTC
-    quoteCurrency: USDT
-  - baseCurrency: ETH
-    quoteCurrency: USDT
-  - baseCurrency: SOL
-    quoteCurrency: USDT
-
-# Exchange-specific configurations
-exchanges:
-  binance:
-    enabled: true
-    takerFee: 0.001  # 0.1%
-  
-  kraken:
-    enabled: true
-    takerFee: 0.0026  # 0.26%
-  
-  coinbase:
-    enabled: false
-    takerFee: 0.006  # 0.6%
-```
-
-## 📊 Sample Output
+The system uses the following formula to calculate arbitrage opportunities:
 
 ```
-time="2025-04-12 00:13:44" level=info msg="Real-Time Arbitrage Detector Started"
-time="2025-04-12 00:13:44" level=info msg="Monitoring pairs: BTC/USDT, ETH/USDT, SOL/USDT"
-time="2025-04-12 00:13:44" level=info msg="Min profit threshold: 0.10%"
-
-time="2025-04-12 00:13:54" level=info msg="MARKET SUMMARY FOR BTC/USDT" avg_profit_pct="16.25%" best_buy="Binance at 70925.14 USDT" best_sell="Binance at 70868.51 USDT" binance_ask="70925.14 USDT" binance_bid="70868.51 USDT" kraken_ask="70946.20 USDT" kraken_bid="70851.72 USDT" opportunities=11 pair=BTC/USDT price_spread="-0.0798%" 
-
-time="2025-04-12 00:13:54" level=info msg="SIMULATED ARBITRAGE OPPORTUNITY DETECTED" buy_exchange=Binance buy_price=63526.14 sell_exchange=Kraken sell_price=74113.83 profit_percentage="16.25%" net_profit="10331.47 USDT" simulated=true
+Profit Percentage = ((Sell Price - Buy Price) / Buy Price) * 100 - Fees
 ```
 
-## 🔍 Web UI
+Where:
+- **Buy Price**: The "ask" price on the exchange with the lower price
+- **Sell Price**: The "bid" price on the exchange with the higher price
+- **Fees**: Combined fees from both exchanges and transfer costs
 
-The project includes an optional web-based dashboard for visualizing arbitrage opportunities in real-time. To access it:
+An opportunity is considered viable when the profit percentage exceeds the configured minimum threshold.
 
-1. Run the application: `go run main.go`
-2. Open your browser to: `http://localhost:8080`
+## Setup and Installation
 
-![Web UI Preview](assets/web-ui-preview.png)
+### Prerequisites
 
-## 📝 License
+- Go 1.18 or higher
+- API keys for supported exchanges
 
-This project is licensed under the MIT License - see the LICENSE file for details.
+### Installation
 
-## 🤝 Contributing
+1. Clone the repository
+   ```bash
+   git clone https://github.com/yourusername/arbitrage-detector.git
+   cd arbitrage-detector
+   ```
+
+2. Install dependencies
+   ```bash
+   go mod tidy
+   ```
+
+3. Set up your configuration
+   ```bash
+   cp .env.example .env
+   # Edit .env with your API keys and preferences
+   ```
+
+4. Build the project
+   ```bash
+   go build -o arbitrage-detector
+   ```
+
+5. Run the application
+   ```bash
+   ./arbitrage-detector
+   ```
+
+6. Open a browser and navigate to `http://localhost:8080`
+
+## Configuration
+
+You can configure the application by editing the `.env` file:
+
+- `SIMULATION_MODE`: Set to `false` to connect to real exchanges using your API keys
+- `MIN_PROFIT_THRESHOLD`: Minimum profit percentage to consider an opportunity valid
+- `LOG_LEVEL`: Detail level for logging (`debug`, `info`, `warn`, `error`)
+- Exchange API keys and secrets (see `.env.example` for required fields)
+
+## Exchange API Keys
+
+To use the system with real data, you'll need to create API keys on each exchange:
+
+- **Binance**: [Create API Keys](https://www.binance.com/en/support/faq/how-to-create-api-keys-on-binance-360002502072)
+- **Kraken**: [Create API Keys](https://support.kraken.com/hc/en-us/articles/360000919966-How-to-generate-an-API-key-pair-)
+- **Coinbase**: [Create API Keys](https://help.coinbase.com/en/pro/other-topics/api/how-do-i-create-an-api-key-for-coinbase-pro)
+
+⚠️ **Important Security Notes**:
+- Use read-only API keys when possible (price monitoring doesn't require trading permissions)
+- Never share your API keys or secrets
+- Store `.env` file securely and don't commit it to version control
+
+## Contributing
 
 Contributions are welcome! Please feel free to submit a Pull Request.
 
-1. Fork the repository
-2. Create your feature branch (`git checkout -b feature/AmazingFeature`)
-3. Commit your changes (`git commit -m 'Add some AmazingFeature'`)
-4. Push to the branch (`git push origin feature/AmazingFeature`)
-5. Open a Pull Request
+## License
 
-## ⚠️ Disclaimer
+This project is licensed under the MIT License - see the LICENSE file for details.
 
-This software is for educational purposes only. Cryptocurrency trading carries significant risk. This tool does not constitute financial advice. Always do your own research before trading.
+## Disclaimer
+
+This software is for educational purposes only. Cryptocurrency trading involves significant risk. No part of this software constitutes financial advice. Always do your own research before engaging in cryptocurrency trading.
+
+---
+
+## Detailed Technical Architecture
+
+### Component Structure
+
+The application is organized into several packages:
+
+- **cmd/main.go**: Entry point and application initialization
+- **pkg/config**: Configuration management
+- **pkg/exchange**: Exchange client implementations
+- **pkg/detector**: Arbitrage detection logic
+- **pkg/models**: Data models
+- **pkg/server**: Web server and WebSocket handling
+- **web/**: Frontend files (HTML, CSS, JavaScript)
+
+### Arbitrage Detection Algorithm
+
+The core algorithm works as follows:
+
+1. Maintain order books (bid/ask prices) for each trading pair on each exchange
+2. For each pair of exchanges (A and B):
+   - Check if buying on exchange A and selling on exchange B is profitable
+   - Check if buying on exchange B and selling on exchange A is profitable
+3. Calculate profit after accounting for:
+   - Exchange trading fees
+   - Transaction/withdrawal fees
+   - Slippage (price movement during execution)
+4. If profit exceeds the minimum threshold, record the opportunity
+
+### Performance Considerations
+
+- **Latency**: The system is designed to minimize latency between detection and notification
+- **Exchange Rate Limits**: Respects API rate limits to avoid being blocked
+- **Error Handling**: Robust error handling for network issues and exchange downtime
+- **Reconnection Logic**: Automatically reconnects when a connection is lost

@@ -1,158 +1,141 @@
 package config
 
 import (
-        "fmt"
         "os"
-        "strings"
+        "strconv"
 
-        "github.com/spf13/viper"
+        "github.com/joho/godotenv"
         log "github.com/sirupsen/logrus"
 )
 
-// Config holds the application configuration
-type Config struct {
-        MinProfitThreshold float64             `mapstructure:"minProfitThreshold"`
-        TradingPairs       []TradingPair       `mapstructure:"tradingPairs"`
-        Exchanges          ExchangesConfig     `mapstructure:"exchanges"`
-        Logging            LoggingConfig       `mapstructure:"logging"`
-        Opportunities      OpportunitiesConfig `mapstructure:"opportunities"`
-}
-
-// TradingPair represents a trading pair to monitor across exchanges
+// Trading pair represents a market pair like BTC/USDT
 type TradingPair struct {
-        BaseCurrency  string `mapstructure:"baseCurrency"`  // e.g., BTC, ETH
-        QuoteCurrency string `mapstructure:"quoteCurrency"` // e.g., USDT, USD
+        BaseCurrency  string
+        QuoteCurrency string
 }
 
-// ExchangesConfig holds the configuration for all exchanges
+// ExchangeConfig stores configuration for a specific exchange
+type ExchangeConfig struct {
+        Enabled  bool
+        TakerFee float64
+        MakerFee float64
+        APIKey   string
+        APISecret string
+}
+
+// ExchangesConfig holds configuration for all exchanges
 type ExchangesConfig struct {
-        Binance BinanceConfig `mapstructure:"binance"`
-        Kraken  KrakenConfig  `mapstructure:"kraken"`
-        Coinbase CoinbaseConfig `mapstructure:"coinbase"` // Added Coinbase for more exchanges
+        Binance  ExchangeConfig
+        Kraken   ExchangeConfig
+        Coinbase ExchangeConfig
 }
 
-// BinanceConfig holds Binance-specific configuration
-type BinanceConfig struct {
-        Enabled    bool    `mapstructure:"enabled"`
-        TakerFee   float64 `mapstructure:"takerFee"`
-        // PairSymbol moved to TradingPairs config
+// Config stores all configuration of the application
+type Config struct {
+        // Exchange API keys
+        BinanceAPIKey     string
+        BinanceAPISecret  string
+        KrakenAPIKey      string
+        KrakenAPISecret   string
+        CoinbaseAPIKey    string
+        CoinbaseAPISecret string
+        CoinbasePassphrase string
+
+        // Application configuration
+        SimulationMode     bool
+        MinProfitThreshold float64
+        LogLevel           string
+        
+        // Trading pairs to monitor
+        TradingPairs []TradingPair
+        
+        // Exchange-specific configurations
+        Exchanges ExchangesConfig
 }
 
-// KrakenConfig holds Kraken-specific configuration
-type KrakenConfig struct {
-        Enabled    bool    `mapstructure:"enabled"`
-        TakerFee   float64 `mapstructure:"takerFee"`
-        // PairSymbol moved to TradingPairs config
-}
-
-// CoinbaseConfig holds Coinbase-specific configuration  
-type CoinbaseConfig struct {
-        Enabled    bool    `mapstructure:"enabled"`
-        TakerFee   float64 `mapstructure:"takerFee"`
-}
-
-// LoggingConfig holds logging configuration
-type LoggingConfig struct {
-        Level  string `mapstructure:"level"`
-        File   string `mapstructure:"file"`
-        Format string `mapstructure:"format"`
-}
-
-// OpportunitiesConfig holds configuration for opportunity logging
-type OpportunitiesConfig struct {
-        LogFile   string `mapstructure:"logFile"`
-        LogFormat string `mapstructure:"logFormat"`
-}
-
-// LoadConfig loads the application configuration from config.yaml
+// LoadConfig reads configuration from .env file or environment variables
 func LoadConfig() (*Config, error) {
-        // Create a new Viper instance
-        v := viper.New()
-        
-        // Set default configuration values
-        setDefaultConfig(v)
-        
-        // Set configuration file name and paths
-        v.SetConfigName("config")
-        v.SetConfigType("yaml")
-        v.AddConfigPath(".")
-        v.AddConfigPath("./config")
-        
-        // Read configuration file
-        if err := v.ReadInConfig(); err != nil {
-                if _, ok := err.(viper.ConfigFileNotFoundError); ok {
-                        log.Warning("No config file found, using default values")
-                } else {
-                        return nil, fmt.Errorf("error reading config file: %v", err)
+        // Load .env file if it exists
+        _ = godotenv.Load()
+
+        config := &Config{
+                // Exchange API keys
+                BinanceAPIKey:     getEnv("BINANCE_API_KEY", ""),
+                BinanceAPISecret:  getEnv("BINANCE_API_SECRET", ""),
+                KrakenAPIKey:      getEnv("KRAKEN_API_KEY", ""),
+                KrakenAPISecret:   getEnv("KRAKEN_API_SECRET", ""),
+                CoinbaseAPIKey:    getEnv("COINBASE_API_KEY", ""),
+                CoinbaseAPISecret: getEnv("COINBASE_API_SECRET", ""),
+                CoinbasePassphrase: getEnv("COINBASE_PASSPHRASE", ""),
+
+                // Application configuration
+                SimulationMode:     getBoolEnv("SIMULATION_MODE", true),
+                MinProfitThreshold: getFloatEnv("MIN_PROFIT_THRESHOLD", 0.1),
+                LogLevel:           getEnv("LOG_LEVEL", "info"),
+                
+                // Default trading pairs
+                TradingPairs: []TradingPair{
+                        {BaseCurrency: "BTC", QuoteCurrency: "USDT"},
+                        {BaseCurrency: "ETH", QuoteCurrency: "USDT"},
+                },
+                
+                // Exchange configurations
+                Exchanges: ExchangesConfig{
+                        Binance: ExchangeConfig{
+                                Enabled:   true,
+                                TakerFee:  getFloatEnv("BINANCE_TAKER_FEE", 0.001), // 0.1%
+                                MakerFee:  getFloatEnv("BINANCE_MAKER_FEE", 0.0008), // 0.08%
+                                APIKey:    getEnv("BINANCE_API_KEY", ""),
+                                APISecret: getEnv("BINANCE_API_SECRET", ""),
+                        },
+                        Kraken: ExchangeConfig{
+                                Enabled:   true,
+                                TakerFee:  getFloatEnv("KRAKEN_TAKER_FEE", 0.0026), // 0.26%
+                                MakerFee:  getFloatEnv("KRAKEN_MAKER_FEE", 0.0016), // 0.16%
+                                APIKey:    getEnv("KRAKEN_API_KEY", ""),
+                                APISecret: getEnv("KRAKEN_API_SECRET", ""),
+                        },
+                        Coinbase: ExchangeConfig{
+                                Enabled:   getBoolEnv("COINBASE_ENABLED", false),
+                                TakerFee:  getFloatEnv("COINBASE_TAKER_FEE", 0.0025), // 0.25%
+                                MakerFee:  getFloatEnv("COINBASE_MAKER_FEE", 0.0015), // 0.15%
+                                APIKey:    getEnv("COINBASE_API_KEY", ""),
+                                APISecret: getEnv("COINBASE_API_SECRET", ""),
+                        },
+                },
+        }
+
+        return config, nil
+}
+
+// Helper function to read an environment variable or return a default value
+func getEnv(key, defaultValue string) string {
+        if value, exists := os.LookupEnv(key); exists {
+                return value
+        }
+        return defaultValue
+}
+
+// Helper function to read a boolean environment variable
+func getBoolEnv(key string, defaultValue bool) bool {
+        if valueStr, exists := os.LookupEnv(key); exists {
+                value, err := strconv.ParseBool(valueStr)
+                if err == nil {
+                        return value
                 }
+                log.Warnf("Invalid boolean value for %s: %s", key, valueStr)
         }
-        
-        // Override with environment variables if present
-        v.SetEnvPrefix("ARBITRAGE")
-        v.SetEnvKeyReplacer(strings.NewReplacer(".", "_"))
-        v.AutomaticEnv()
-        
-        // Create the data directory if it doesn't exist
-        os.MkdirAll("data", 0755)
-        
-        // Parse the configuration into our struct
-        var config Config
-        if err := v.Unmarshal(&config); err != nil {
-                return nil, fmt.Errorf("error unmarshaling config: %v", err)
-        }
-        
-        // Set log level based on config
-        setLogLevel(config.Logging.Level)
-        
-        return &config, nil
+        return defaultValue
 }
 
-// setDefaultConfig sets default configuration values
-func setDefaultConfig(v *viper.Viper) {
-        // Minimum profit threshold
-        v.SetDefault("minProfitThreshold", 0.001) // 0.1%
-        
-        // Default trading pairs
-        v.SetDefault("tradingPairs", []map[string]string{
-                {"baseCurrency": "BTC", "quoteCurrency": "USDT"}, // Bitcoin
-                {"baseCurrency": "ETH", "quoteCurrency": "USDT"}, // Ethereum
-                {"baseCurrency": "SOL", "quoteCurrency": "USDT"}, // Solana
-        })
-        
-        // Binance defaults
-        v.SetDefault("exchanges.binance.enabled", true)
-        v.SetDefault("exchanges.binance.takerFee", 0.001) // 0.1%
-        
-        // Kraken defaults
-        v.SetDefault("exchanges.kraken.enabled", true)
-        v.SetDefault("exchanges.kraken.takerFee", 0.0026) // 0.26%
-        
-        // Coinbase defaults
-        v.SetDefault("exchanges.coinbase.enabled", false) // Disabled by default
-        v.SetDefault("exchanges.coinbase.takerFee", 0.006) // 0.6%
-        
-        // Logging defaults
-        v.SetDefault("logging.level", "info")
-        v.SetDefault("logging.file", "data/arbitrage.log")
-        v.SetDefault("logging.format", "text")
-        
-        // Opportunities logging defaults
-        v.SetDefault("opportunities.logFile", "data/opportunities.csv")
-        v.SetDefault("opportunities.logFormat", "csv")
-}
-
-// setLogLevel sets the appropriate log level
-func setLogLevel(level string) {
-        switch strings.ToLower(level) {
-        case "debug":
-                log.SetLevel(log.DebugLevel)
-        case "info":
-                log.SetLevel(log.InfoLevel)
-        case "warn":
-                log.SetLevel(log.WarnLevel)
-        case "error":
-                log.SetLevel(log.ErrorLevel)
-        default:
-                log.SetLevel(log.InfoLevel)
+// Helper function to read a float environment variable
+func getFloatEnv(key string, defaultValue float64) float64 {
+        if valueStr, exists := os.LookupEnv(key); exists {
+                value, err := strconv.ParseFloat(valueStr, 64)
+                if err == nil {
+                        return value
+                }
+                log.Warnf("Invalid float value for %s: %s", key, valueStr)
         }
+        return defaultValue
 }

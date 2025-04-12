@@ -1,0 +1,29 @@
+# Binaries for programs and plugins
+*.exe
+*.exe~
+*.dll
+*.so
+*.dylib
+
+# Dependency directories
+vendor/
+
+# Environment variables
+.env
+
+# Log files
+*.log
+logs/
+
+# Go specific
+*.test
+*.out
+/dist/
+
+# Project specific
+/data/
+/tmp/
+
+# Operating system files
+.DS_Store
+Thumbs.db
