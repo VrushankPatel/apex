@@ -1,8 +1,7 @@
-# APEX: Arbitrage Profit EXplorer
+# ![APEX Logo](assets/apex-logo.svg)
 
 A sophisticated Go-based system for detecting arbitrage opportunities across cryptocurrency exchanges in real-time.
 
-![APEX UI](web/static/img/screenshot.png)
 
 ## What is Arbitrage?
 

@@ -1,0 +1,24 @@
+<svg width="300" height="100" viewBox="0 0 300 100" xmlns="http://www.w3.org/2000/svg" fill="none">
+  <rect width="300" height="100" rx="12" fill="#0B0F1A"/>
+  <text x="20" y="35" font-size="28" fill="#00FFD1" font-family="Segoe UI, sans-serif" font-weight="bold">APEX</text>
+  <text x="20" y="58" font-size="10" fill="#BBBBBB" font-family="Segoe UI, sans-serif">Arbitrage Profit EXplorer</text>
+
+  <!-- Exchange Nodes -->
+  <circle cx="220" cy="30" r="10" fill="#1E90FF"/>
+  <circle cx="260" cy="30" r="10" fill="#32CD32"/>
+  <circle cx="240" cy="70" r="10" fill="#FF8C00"/>
+
+  <!-- Connecting Lines -->
+  <line x1="220" y1="30" x2="260" y2="30" stroke="#FFFFFF" stroke-width="1.5"/>
+  <line x1="220" y1="30" x2="240" y2="70" stroke="#FFFFFF" stroke-width="1.5"/>
+  <line x1="260" y1="30" x2="240" y2="70" stroke="#FFFFFF" stroke-width="1.5"/>
+
+  <!-- Arrows Indicating Arbitrage -->
+  <path d="M225 30 l5 -5 l-5 5 l5 5" fill="none" stroke="#00FFD1" stroke-width="1"/>
+  <path d="M250 70 l-5 5 l5 -5 l-5 -5" fill="none" stroke="#00FFD1" stroke-width="1"/>
+
+  <!-- Real-time Data Indicator -->
+  <circle cx="290" cy="10" r="4" fill="#00FF00">
+    <animate attributeName="opacity" values="1;0.3;1" dur="1.2s" repeatCount="indefinite"/>
+  </circle>
+</svg>
