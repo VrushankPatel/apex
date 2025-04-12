@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="200px" height="200px" viewBox="0 0 200 200" version="1.1" xmlns="http://www.w3.org/2000/svg">
+    <g id="arbitrage-logo" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <circle id="background" fill="#2C3E50" cx="100" cy="100" r="100"></circle>
+        <g id="arrows" transform="translate(30.000000, 60.000000)" fill-rule="nonzero">
+            <path d="M125,0 L140,25 L110,25 L125,0 Z" id="up-arrow" fill="#2ECC71"></path>
+            <path d="M15,80 L0,55 L30,55 L15,80 Z" id="down-arrow" fill="#E74C3C"></path>
+            <path d="M140,37.5 L0,37.5 C0,37.5 15,42.5 15,50 C15,57.5 0,62.5 0,62.5 L140,62.5 C140,62.5 125,57.5 125,50 C125,42.5 140,37.5 140,37.5 Z" id="exchange-path" fill="#3498DB"></path>
+        </g>
+        <circle id="coin-1" fill="#F1C40F" cx="60" cy="45" r="15"></circle>
+        <circle id="coin-2" fill="#F1C40F" cx="140" cy="155" r="15"></circle>
+        <text id="$" font-family="Arial-BoldMT, Arial" font-size="24" font-weight="bold" fill="#FFFFFF">
+            <tspan x="55" y="53">$</tspan>
+        </text>
+        <text id="$" font-family="Arial-BoldMT, Arial" font-size="24" font-weight="bold" fill="#FFFFFF">
+            <tspan x="135" y="163">$</tspan>
+        </text>
+    </g>
+</svg>

@@ -3,108 +3,112 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Crypto Arbitrage Detector</title>
-    <link rel="stylesheet" href="/static/css/styles.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <title>Real-Time Arbitrage Detector</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <link rel="icon" href="img/favicon.ico" type="image/x-icon">
 </head>
 <body>
-    <header>
-        <div class="logo">
-            <i class="fas fa-chart-line"></i>
-            <h1>Crypto Arbitrage Detector</h1>
-        </div>
-        <div class="status">
-            <span id="connection-status" class="connection-offline">
-                <i class="fas fa-circle"></i> Offline
-            </span>
-        </div>
-    </header>
+    <div class="container">
+        <header>
+            <div class="logo-container">
+                <img src="img/logo.svg" alt="Arbitrage Detector Logo" class="logo">
+                <h1>Real-Time Arbitrage Detector</h1>
+            </div>
+            <div class="connection-status">
+                <span id="status-indicator"></span>
+                <span id="status-text">Disconnected</span>
+            </div>
+        </header>
 
-    <main>
-        <section class="dashboard">
-            <div class="stats-container">
-                <div class="stat-card">
-                    <h3>Active Exchanges</h3>
-                    <div class="stat-value" id="active-exchanges">0</div>
-                    <div class="stat-detail">Connected exchanges</div>
-                </div>
-                <div class="stat-card">
-                    <h3>Trading Pairs</h3>
-                    <div class="stat-value" id="trading-pairs">0</div>
-                    <div class="stat-detail">Monitored pairs</div>
-                </div>
-                <div class="stat-card">
-                    <h3>Total Opportunities</h3>
-                    <div class="stat-value" id="total-opportunities">0</div>
-                    <div class="stat-detail">Detected</div>
-                </div>
-                <div class="stat-card">
-                    <h3>Potential Profit</h3>
-                    <div class="stat-value" id="potential-profit">$0.00</div>
-                    <div class="stat-detail">Total profit potential</div>
+        <div class="dashboard">
+            <div class="dashboard-card summary">
+                <h2>Market Summary</h2>
+                <div class="stats-container">
+                    <div class="stat-item">
+                        <span class="stat-label">Total Opportunities</span>
+                        <span id="total-opportunities" class="stat-value">0</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-label">Total Profit (USDT)</span>
+                        <span id="total-profit" class="stat-value">0.00</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-label">Avg. Profit (%)</span>
+                        <span id="avg-profit" class="stat-value">0.00%</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-label">Last Update</span>
+                        <span id="last-update" class="stat-value">-</span>
+                    </div>
                 </div>
             </div>
 
-            <div class="opportunity-container">
-                <h2><i class="fas fa-bolt"></i> Live Arbitrage Opportunities</h2>
-                <table class="opportunity-table">
-                    <thead>
-                        <tr>
-                            <th>Time</th>
-                            <th>Pair</th>
-                            <th>Buy Exchange</th>
-                            <th>Sell Exchange</th>
-                            <th>Buy Price</th>
-                            <th>Sell Price</th>
-                            <th>Profit %</th>
-                            <th>Profit</th>
-                        </tr>
-                    </thead>
-                    <tbody id="opportunities-table-body">
-                        <tr class="empty-row">
-                            <td colspan="8">No opportunities detected yet</td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-
-            <div class="exchange-container">
-                <h2><i class="fas fa-exchange-alt"></i> Exchange Prices</h2>
-                <div class="exchange-grid" id="exchange-grid">
-                    <!-- Exchange cards will be generated dynamically -->
-                    <div class="empty-exchanges">No exchange data available</div>
+            <div class="dashboard-row">
+                <div class="dashboard-card exchange-prices">
+                    <h2>Exchange Prices</h2>
+                    <div class="exchange-grid" id="exchange-grid">
+                        <div class="exchange-grid-header">
+                            <div class="exchange-col">Pair</div>
+                            <div class="exchange-col">Exchange</div>
+                            <div class="exchange-col">Bid</div>
+                            <div class="exchange-col">Ask</div>
+                            <div class="exchange-col">Spread</div>
+                        </div>
+                        <div id="exchange-data" class="exchange-grid-body">
+                            <!-- Exchange data will be populated here -->
+                            <div class="exchange-grid-row">
+                                <div class="exchange-col">Loading...</div>
+                                <div class="exchange-col"></div>
+                                <div class="exchange-col"></div>
+                                <div class="exchange-col"></div>
+                                <div class="exchange-col"></div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
-        </section>
-    </main>
 
-    <footer>
-        <p>Real-Time Crypto Arbitrage Detector | <span id="current-time">00:00:00</span></p>
-    </footer>
-
-    <!-- Templates -->
-    <template id="exchange-card-template">
-        <div class="exchange-card">
-            <div class="exchange-header">
-                <h3 class="exchange-name"></h3>
-                <span class="pair-name"></span>
-            </div>
-            <div class="price-container">
-                <div class="bid">
-                    <span class="label">Bid</span>
-                    <span class="value"></span>
+            <div class="dashboard-row">
+                <div class="dashboard-card opportunities">
+                    <h2>Arbitrage Opportunities</h2>
+                    <div class="opportunity-container">
+                        <table class="opportunity-table">
+                            <thead>
+                                <tr>
+                                    <th>Time</th>
+                                    <th>Buy Exchange</th>
+                                    <th>Sell Exchange</th>
+                                    <th>Buy Price</th>
+                                    <th>Sell Price</th>
+                                    <th>Profit %</th>
+                                    <th>Net Profit</th>
+                                </tr>
+                            </thead>
+                            <tbody id="opportunities-table-body">
+                                <!-- Opportunities will be populated here -->
+                                <tr>
+                                    <td colspan="7" class="table-empty-message">Waiting for arbitrage opportunities...</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
-                <div class="ask">
-                    <span class="label">Ask</span>
-                    <span class="value"></span>
-                </div>
-            </div>
-            <div class="exchange-footer">
-                <span class="last-update"></span>
             </div>
         </div>
-    </template>
 
-    <script src="/static/js/app.js"></script>
+        <footer>
+            <p>&copy; 2025 Real-Time Arbitrage Detector | <span id="current-time">00:00:00</span></p>
+        </footer>
+    </div>
+
+    <div id="notification" class="notification hidden">
+        <div class="notification-content">
+            <h3>New Arbitrage Opportunity!</h3>
+            <p id="notification-message"></p>
+            <button id="notification-close">Close</button>
+        </div>
+    </div>
+
+    <script src="js/app.js"></script>
 </body>
 </html>
