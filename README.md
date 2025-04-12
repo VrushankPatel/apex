@@ -1,8 +1,8 @@
-# Real-Time Cryptocurrency Arbitrage Detector
+# APEX: Arbitrage Profit EXplorer
 
 A sophisticated Go-based system for detecting arbitrage opportunities across cryptocurrency exchanges in real-time.
 
-![Arbitrage Detector UI](web/static/img/screenshot.png)
+![APEX UI](web/static/img/screenshot.png)
 
 ## What is Arbitrage?
 
@@ -52,8 +52,8 @@ An opportunity is considered viable when the profit percentage exceeds the confi
 
 1. Clone the repository
    ```bash
-   git clone https://github.com/yourusername/arbitrage-detector.git
-   cd arbitrage-detector
+   git clone https://github.com/yourusername/apex-arbitrage.git
+   cd apex-arbitrage
    ```
 
 2. Install dependencies
@@ -69,12 +69,12 @@ An opportunity is considered viable when the profit percentage exceeds the confi
 
 4. Build the project
    ```bash
-   go build -o arbitrage-detector
+   go build -o apex
    ```
 
 5. Run the application
    ```bash
-   ./arbitrage-detector
+   ./apex
    ```
 
 6. Open a browser and navigate to `http://localhost:8080`
