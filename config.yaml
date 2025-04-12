@@ -1,0 +1,27 @@
+# Arbitrage Detector Configuration
+
+# Minimum profit threshold as a decimal (e.g., 0.001 = 0.1%)
+minProfitThreshold: 0.001
+
+# Exchange configurations
+exchanges:
+  binance:
+    enabled: true
+    pairSymbol: "BTCUSDT"
+    takerFee: 0.001  # 0.1%
+  
+  kraken:
+    enabled: true
+    pairSymbol: "XBT/USDT"
+    takerFee: 0.0026  # 0.26%
+
+# Logging configuration
+logging:
+  level: "info"  # debug, info, warn, error
+  file: "data/arbitrage.log"
+  format: "text" # text or json
+
+# Opportunity logging
+opportunities:
+  logFile: "data/opportunities.csv"
+  logFormat: "csv"  # csv or json
