@@ -41,7 +41,23 @@ function init() {
 function connectWebSocket() {
     // Get the current host and determine WebSocket URL
     const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
-    const wsUrl = `${protocol}//${window.location.host}/ws`;
+    
+    // Build the WebSocket URL using the current host
+    // For Replit, we need to ensure we're using the right port (5000)
+    let host = window.location.host;
+    if (host.includes('replit.dev') || host.includes('replit.app')) {
+        // Use the same host for Replit deployments
+        host = window.location.host;
+    } else if (host.includes(':')) {
+        // Local development - preserve the port
+        host = window.location.host;
+    } else {
+        // Make sure we use port 8080 if no port is specified
+        host = host + ':8080';
+    }
+    
+    const wsUrl = `${protocol}//${host}/ws`;
+    console.log('Connecting to WebSocket at:', wsUrl);
     
     // Create WebSocket connection
     socket = new WebSocket(wsUrl);
@@ -56,6 +72,7 @@ function connectWebSocket() {
     socket.addEventListener('message', (event) => {
         try {
             const data = JSON.parse(event.data);
+            console.log('Received data:', data);
             processData(data);
         } catch (error) {
             console.error('Error parsing WebSocket message:', error);
