@@ -19,9 +19,15 @@ import (
 	log "github.com/sirupsen/logrus"
 )
 
+// Version is set during build
+var Version = "dev"
+
 func main() {
 	// Initialize logger
 	util.InitLogger()
+
+	// Print version
+	log.Infof("APEX Version: %s", Version)
 
 	// Load config
 	cfg, err := config.LoadConfig()
