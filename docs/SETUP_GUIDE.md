@@ -120,7 +120,7 @@ Options include:
 By default, the web server runs on port 8080. To change this:
 
 1. Modify the port number in `pkg/server/server.go`
-2. Update the workflow configuration if using Replit
+2. Update the workflow configuration for editor specifics
 
 ### Exchange-Specific Settings
 

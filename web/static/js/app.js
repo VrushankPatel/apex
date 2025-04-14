@@ -165,12 +165,8 @@ function connectWebSocket() {
     const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
     
     // Build the WebSocket URL using the current host
-    // For Replit, we need to ensure we're using the right port (5000)
     let host = window.location.host;
-    if (host.includes('replit.dev') || host.includes('replit.app')) {
-        // Use the same host for Replit deployments
-        host = window.location.host;
-    } else if (host.includes(':')) {
+    if (host.includes(':')) {
         // Local development - preserve the port
         host = window.location.host;
     } else {
@@ -272,31 +268,42 @@ function showNotification(opportunity) {
 
 // Update the statistics
 function updateStats() {
-    if (opportunities.length > 0) {
+    // Initialize default values
+    let totalOpportunities = 0;
+    let totalProfit = 0;
+    let avgProfit = 0;
+    
+    if (Array.isArray(opportunities) && opportunities.length > 0) {
         // Calculate statistics
-        const totalOpportunities = opportunities.length;
-        let totalProfit = 0;
+        totalOpportunities = opportunities.length;
         let totalProfitPct = 0;
+        let validProfitCount = 0;
         
         opportunities.forEach(opp => {
-            totalProfit += opp.NetProfit;
-            totalProfitPct += opp.ProfitPercentage;
+            if (opp && typeof opp.NetProfit === 'number' && !isNaN(opp.NetProfit)) {
+                totalProfit += opp.NetProfit;
+            }
+            if (opp && typeof opp.ProfitPercentage === 'number' && !isNaN(opp.ProfitPercentage)) {
+                totalProfitPct += opp.ProfitPercentage;
+                validProfitCount++;
+            }
         });
         
-        const avgProfit = totalProfitPct / totalOpportunities;
-        
-        // Update the stats data
-        statsData = {
-            totalOpportunities,
-            totalProfit,
-            avgProfit
-        };
-        
-        // Update UI
-        totalOpportunitiesElement.textContent = totalOpportunities;
-        totalProfitElement.textContent = formatCurrency(totalProfit);
-        avgProfitElement.textContent = avgProfit.toFixed(2) + '%';
+        // Calculate average only if we have valid profit percentages
+        avgProfit = validProfitCount > 0 ? totalProfitPct / validProfitCount : 0;
     }
+    
+    // Update the stats data
+    statsData = {
+        totalOpportunities,
+        totalProfit,
+        avgProfit
+    };
+    
+    // Update UI with proper formatting
+    totalOpportunitiesElement.textContent = totalOpportunities.toString();
+    totalProfitElement.textContent = formatCurrency(totalProfit);
+    avgProfitElement.textContent = formatCurrency(avgProfit) + '%';
 }
 
 // Update the opportunities table
@@ -420,7 +427,10 @@ function formatTime(date) {
 
 // Format a currency value with 2 decimal places
 function formatCurrency(value) {
-    return value.toFixed(2);
+    if (value === null || value === undefined || isNaN(value)) {
+        return '0.00';
+    }
+    return Number(value).toFixed(2);
 }
 
 // Handle market change
